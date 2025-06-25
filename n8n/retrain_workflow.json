@@ -1,0 +1,18 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "filePath": "/backend/data/search_logs.json"
+      },
+      "name": "Read Search Logs",
+      "type": "n8n-nodes-base.readBinaryFile"
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ json: { retrain: true } }];"
+      },
+      "name": "Trigger Retrain",
+      "type": "n8n-nodes-base.function"
+    }
+  ]
+}

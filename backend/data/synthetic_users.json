@@ -1,0 +1,221 @@
+[
+  {
+    "user_id": "frontier1",
+    "name": "Alice Tan",
+    "location": "Singapore",
+    "customer_segment": "HNW",
+    "preferred_currency": "SGD",
+    "preferred_industries": ["Banking", "Finance"],
+    "preferred_duration": "long",
+    "preferred_return": "high",
+    "custom_filters": {
+      "country": "Singapore",
+      "currency": "SGD"
+    },
+    "customer_profiles": [
+      {
+        "customer_id": "c1",
+        "name": "Lim Wei",
+        "segment": "HNW",
+        "preferences": {
+          "currency": "SGD",
+          "industry": "Banking",
+          "duration": "long",
+          "credit_rating": "AA"
+        }
+      },
+      {
+        "customer_id": "c5",
+        "name": "Tan Mei",
+        "segment": "HNW",
+        "preferences": {
+          "currency": "SGD",
+          "industry": "Finance",
+          "duration": "medium",
+          "credit_rating": "A+"
+        }
+      },
+      {
+        "customer_id": "c6",
+        "name": "Lee Kuan",
+        "segment": "HNW",
+        "preferences": {
+          "currency": "SGD",
+          "industry": "Banking",
+          "duration": "short",
+          "credit_rating": "A++",
+          "keywords": ["callable", "green bond", "tax-free"]
+        }
+      }
+    ]
+  },
+  {
+    "user_id": "frontier2",
+    "name": "Rahul Mehra",
+    "location": "India",
+    "customer_segment": "Retail",
+    "preferred_currency": "INR",
+    "preferred_industries": ["Finance", "Energy"],
+    "preferred_duration": "medium",
+    "preferred_return": "medium",
+    "custom_filters": {
+      "country": "India",
+      "currency": "INR"
+    },
+    "customer_profiles": [
+      {
+        "customer_id": "c2",
+        "name": "Priya Singh",
+        "segment": "Retail",
+        "preferences": {
+          "currency": "INR",
+          "industry": "Finance",
+          "duration": "medium",
+          "credit_rating": "A"
+        }
+      },
+      {
+        "customer_id": "c4",
+        "name": "Amit Patel",
+        "segment": "Retail",
+        "preferences": {
+          "currency": "INR",
+          "industry": "Energy",
+          "duration": "long",
+          "preferred_bond_types": ["Green", "Tax-Free"],
+          "preferred_issuer": "SBI",
+          "credit_rating": "AA"
+        }
+      },
+      {
+        "customer_id": "c7",
+        "name": "Sunita Rao",
+        "segment": "Retail",
+        "preferences": {
+          "currency": "INR",
+          "industry": "Energy",
+          "duration": "short",
+          "credit_rating": "A--",
+          "keywords": ["puttable", "fixed", "annual"]
+        }
+      }
+    ],
+    "india_bonds": [
+      {
+        "bond_id": "INB1",
+        "bond_name": "SBI India High Yield 2035",
+        "issuer": "SBI",
+        "currency": "INR",
+        "return": "high",
+        "duration": "long",
+        "status": "active",
+        "segment": "Corporate",
+        "industry": "Finance",
+        "country": "India",
+        "maturity_date": "2035-12-31",
+        "coupon_rate": 6.5,
+        "issue_date": "2024-01-01",
+        "face_value": 10000,
+        "price": 10100,
+        "yield_to_maturity": 6.4,
+        "credit_rating": "A+",
+        "callable": false,
+        "puttable": false,
+        "seniority": "Senior",
+        "secured": true,
+        "tax_status": "Taxable",
+        "min_investment": 10000,
+        "lot_size": 1000,
+        "frequency": "Annual",
+        "isin": "IN0987654321",
+        "guarantor": null,
+        "listing_exchange": "NSE",
+        "benchmark": "G-Sec",
+        "type": "Fixed",
+        "subordination": "None",
+        "convertible": false,
+        "perpetual": false,
+        "green_bond": false,
+        "sinking_fund": false,
+        "market": "Primary"
+      },
+      {
+        "bond_id": "INB2",
+        "bond_name": "REC India Green Bond 2029",
+        "issuer": "REC",
+        "currency": "INR",
+        "return": "medium",
+        "duration": "medium",
+        "status": "active",
+        "segment": "Corporate",
+        "industry": "Energy",
+        "country": "India",
+        "maturity_date": "2029-09-30",
+        "coupon_rate": 5.8,
+        "issue_date": "2022-09-01",
+        "face_value": 5000,
+        "price": 5050,
+        "yield_to_maturity": 5.7,
+        "credit_rating": "AA",
+        "callable": false,
+        "puttable": true,
+        "seniority": "Senior",
+        "secured": true,
+        "tax_status": "Tax-Free",
+        "min_investment": 5000,
+        "lot_size": 1000,
+        "frequency": "Semi-Annual",
+        "isin": "IN1122334455",
+        "guarantor": null,
+        "listing_exchange": "BSE",
+        "benchmark": "G-Sec",
+        "type": "Green",
+        "subordination": "None",
+        "convertible": false,
+        "perpetual": false,
+        "green_bond": true,
+        "sinking_fund": false,
+        "market": "Primary"
+      }
+    ]
+  },
+  {
+    "user_id": "frontier3",
+    "name": "John Smith",
+    "location": "USA",
+    "customer_segment": "Institutional",
+    "preferred_currency": "USD",
+    "preferred_industries": ["Banking", "Technology"],
+    "preferred_duration": "long",
+    "preferred_return": "high",
+    "custom_filters": {
+      "country": "USA",
+      "currency": "USD"
+    },
+    "customer_profiles": [
+      {
+        "customer_id": "c3",
+        "name": "Michael Lee",
+        "segment": "Institutional",
+        "preferences": {
+          "currency": "USD",
+          "industry": "Banking",
+          "duration": "long",
+          "credit_rating": "AAA"
+        }
+      },
+      {
+        "customer_id": "c8",
+        "name": "David Miller",
+        "segment": "Institutional",
+        "preferences": {
+          "currency": "USD",
+          "industry": "Technology",
+          "duration": "medium",
+          "credit_rating": "A+",
+          "keywords": ["floating", "quarterly", "high yield"]
+        }
+      }
+    ]
+  }
+]
