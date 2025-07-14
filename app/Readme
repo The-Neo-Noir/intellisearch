@@ -1,0 +1,16 @@
+### READ ME FIRST
+
+This project has two main folders
+    frontend: Currently contains one html file which has just page.
+        To run the frontend you don't need to run a server, if you
+        are running in the intellij , just run the home.html,
+        and ensure the backend which is going to be a server, running.
+
+        TODO: if you wish to deploy in a web server
+    backend :
+        test.py : use this file to test the suggestions without the need of frontend
+        database: contains code that helps connect to mongodb ( needs mongodb to be installed separately.)
+        domain: contains domain specific translations
+
+    requirements.txt contains all the necessary packages required to run the backend
+

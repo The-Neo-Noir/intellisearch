@@ -1,0 +1,9 @@
+langchain
+openai
+python-dotenv
+transformers
+datasets
+torch
+accelerate>=0.26.0
+fastapi[all]
+mongoengine

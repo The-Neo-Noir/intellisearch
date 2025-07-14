@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Bond Search Autocomplete</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+        }
+
+        .autocomplete-container {
+            position: relative;
+            display: flex;
+            width: 800px;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #submitBtn {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 60px;
+            background: white;
+            border: 1px solid #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .suggestion {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .suggestion:hover,
+        .suggestion.active {
+            background-color: #f0f0f0;
+        }
+
+        #loader {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        #resultsTable {
+            margin-top: 2rem;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #resultsTable th,
+        #resultsTable td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        #resultsTable th {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Search bonds using natural language</h2>
+<div class="autocomplete-container">
+    <input type="text" id="searchInput" placeholder="Start typing..." autocomplete="off" />
+    <button id="submitBtn">Submit</button>
+    <div id="suggestions" class="suggestions" style="display: none;"></div>
+</div>
+
+<div id="loader">🔄 Loading results...</div>
+
+<table id="resultsTable" style="display: none;">
+    <thead>
+    <tr>
+        <th>Issuer</th>
+        <th>Coupon</th>
+        <th>Maturity</th>
+        <th>Rating</th>
+        <th>Segment</th>
+        <th>Location</th>
+    </tr>
+    </thead>
+    <tbody id="resultsBody"></tbody>
+</table>
+
+<script>
+    const socket = new WebSocket("ws://localhost:8000/ws/generate");
+    const input = document.getElementById("searchInput");
+    const suggestionBox = document.getElementById("suggestions");
+    const submitBtn = document.getElementById("submitBtn");
+    const loader = document.getElementById("loader");
+    const resultsTable = document.getElementById("resultsTable");
+    const resultsBody = document.getElementById("resultsBody");
+
+    let lastSentPrompt = "";
+    let currentSuggestions = [];
+    let selectedIndex = -1;
+
+    socket.onopen = () => {
+        console.log("WebSocket connected");
+    };
+
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        currentSuggestions = data.suggestions;
+        selectedIndex = -1;
+        showSuggestions(currentSuggestions);
+    };
+
+    function showSuggestions(suggestions) {
+        suggestionBox.innerHTML = "";
+        const currentText = input.value.trim();  // ✨ Full user input
+
+        if (suggestions.length === 0) {
+            suggestionBox.style.display = "none";
+            return;
+        }
+
+        suggestions.forEach((word, index) => {
+            const div = document.createElement("div");
+            div.className = "suggestion";
+
+            // ✨ Show full text with suggestion
+            const fullText = `${currentText} ${word}`;
+            div.textContent = fullText;
+
+            if (index === selectedIndex) {
+                div.classList.add("active");
+            }
+
+            div.onclick = () => {
+                input.value = fullText;  // ✨ Replace input with full suggestion
+                suggestionBox.style.display = "none";
+                currentSuggestions = [];
+                selectedIndex = -1;
+                input.focus();
+            };
+
+            suggestionBox.appendChild(div);
+        });
+
+        suggestionBox.style.display = "block";
+    }
+
+    function appendSuggestion(word) {
+        input.value += " " + word;
+        suggestionBox.style.display = "none";
+        currentSuggestions = [];
+        selectedIndex = -1;
+        input.focus();
+    }
+
+    const handleInputChange = () => {
+        const text = input.value.trim();
+        const words = text.split(/\s+/);
+
+        if (words.length >= 3 && text !== lastSentPrompt) {
+            lastSentPrompt = text;
+            socket.send(text);
+        } else {
+            suggestionBox.style.display = "none";
+            currentSuggestions = [];
+            selectedIndex = -1;
+        }
+    };
+
+    const debouncedInputChange = debounce(handleInputChange, 300);
+    input.addEventListener("input", debouncedInputChange);
+
+    input.addEventListener("keydown", (e) => {
+        if (suggestionBox.style.display === "none") return;
+
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            selectedIndex = (selectedIndex + 1) % currentSuggestions.length;
+            showSuggestions(currentSuggestions);
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            selectedIndex = (selectedIndex - 1 + currentSuggestions.length) % currentSuggestions.length;
+            showSuggestions(currentSuggestions);
+        } else if (e.key === "Enter" && selectedIndex >= 0) {
+            e.preventDefault();
+            appendSuggestion(currentSuggestions[selectedIndex]);
+        }
+    });
+
+    submitBtn.addEventListener("click", async () => {
+        const finalInput = input.value.trim();
+        if (!finalInput) return;
+
+        loader.style.display = "block";
+        resultsTable.style.display = "none";
+        resultsBody.innerHTML = "";
+
+        try {
+            const response = await fetch("http://localhost:8000/bond-query", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: finalInput })
+            });
+
+            const data = await response.json();
+            loader.style.display = "none";
+
+            if (data.length === 0) {
+                resultsBody.innerHTML = `<tr><td colspan="6">No results found</td></tr>`;
+            } else {
+                data.forEach(bond => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${bond.issuer}</td>
+                        <td>${bond.coupon}</td>
+                        <td>${bond.maturityYear}</td>
+                        <td>${bond.rating}</td>
+                        <td>${bond.segment}</td>
+                        <td>${bond.location}</td>
+                    `;
+                    resultsBody.appendChild(row);
+                });
+            }
+
+            resultsTable.style.display = "table";
+
+        } catch (err) {
+            loader.style.display = "none";
+            alert("Failed to fetch results");
+            console.error(err);
+        }
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".autocomplete-container")) {
+            suggestionBox.style.display = "none";
+        }
+    });
+
+    function debounce(fn, delay) {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn(...args), delay);
+        };
+    }
+</script>
+</body>
+</html>

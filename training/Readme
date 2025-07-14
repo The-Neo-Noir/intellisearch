@@ -1,0 +1,16 @@
+This module deals with finetuning the model using gpt-2 , transformers from hugging faces
+
+data folder contains the training data needed to fine tune the model
+
+
+requirements.txt will have the necessary packages required for the training.
+
+run train.py and wait for the training to complete.
+
+After a successful training , you should see the folder, model/bonds
+
+Congrats the training is complete. This model is what we are going to use
+for getting suggestions in the app. Note that you can SAFELY DELETE the checkpoints
+folder inside model/bonds
+
+
