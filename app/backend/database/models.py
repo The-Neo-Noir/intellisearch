@@ -3,12 +3,16 @@ from datetime import datetime
 
 
 class Bond(Document):
+    isin = StringField()
+    currency = StringField()
     issuer = StringField()
+    segment = StringField()
     coupon = FloatField()
     maturity_year = IntField()
     rating = StringField()
-    segment = StringField()
-    location = StringField()
+    yieldType= StringField()
+    issuer_location = StringField()
     created_at = DateTimeField(default=datetime.utcnow)
 
     meta = {'collection': 'bonds'}
+

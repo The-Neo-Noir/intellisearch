@@ -8,23 +8,35 @@ class BondQueryRequest(BaseModel):
 
 
 class BondQueryResponse(BaseModel):
+    isin: str | None = None
+    currency: str | None = None
     issuer: str | None = None
+    segment: str | None = None
     coupon: str | None = None
     maturityYear: int | None = None
     rating: Optional[str] = None
-    segment: str | None = None
-    location: str | None = None
+    yieldType: str | None = None
+    issuer_location: str | None = None
 
 
 # DTO for results shown to the frontend after fetching from DB
 
+
 class BondOut(BaseModel):
+    isin: str | None = None
+    currency: str | None = None
     issuer: str
+    segment: str
     coupon: float
     maturityYear: int
+    yieldType: str | None = None
     rating: str
-    segment: str
-    location: str
+    issuer_location: str | None = None
+
+
+class Response:
+    result: BondOut
+    dsl: BondQueryResponse
 
 
 class QueryRequest(BaseModel):

@@ -1,3 +1,4 @@
+import json
 import os
 
 import database.db
@@ -70,15 +71,22 @@ async def websocket_generate(websocket: WebSocket):
 @app.post("/bond-query")
 async def bond_query(request: QueryRequest):
     result = parse_bond_query(request.query)
-    print(result)
+    print('results from query:',result)
     parsed_response = BondQueryResponse(**result)
 
-    print(parsed_response)
+    print('Parsed response:', parsed_response)
 
     # Construct MongoEngine query filter
     filters = {}
+    if parsed_response.isin:
+        filters['isin'] = parsed_response.isin
+
     if parsed_response.issuer:
         filters["issuer__icontains"] = parsed_response.issuer
+    if parsed_response.currency:
+        filters["currency__icontains"] = parsed_response.currency
+    if parsed_response.segment:
+        filters["segment__iexact"] = parsed_response.segment
     if parsed_response.coupon:
         try:
             filters["coupon__gte"] = float(parsed_response.coupon)
@@ -86,26 +94,34 @@ async def bond_query(request: QueryRequest):
             pass
     if parsed_response.maturityYear:
         filters["maturity_year"] = parsed_response.maturityYear
+    if parsed_response.yieldType:
+        filters["yieldType__icontains"] = parsed_response.yieldType
     if parsed_response.rating:
-        filters["rating__iexact"] = parsed_response.rating
-    if parsed_response.segment:
-        filters["segment__iexact"] = parsed_response.segment
-    if parsed_response.location:
-        filters["location__iexact"] = parsed_response.location
+        filters["rating__icontains"] = parsed_response.rating
+    if parsed_response.issuer_location:
+        filters["issuer_location__icontains"] = parsed_response.issuer_location
 
     bonds = Bond.objects(**filters)
-
-    return [
+   # print('bond filted object', bonds)
+    bond_data = [
         BondOut(
+            isin= b.isin,
+            currency= b.currency,
             issuer=b.issuer,
+            segment=b.segment,
             coupon=b.coupon,
             maturityYear=b.maturity_year,
             rating=b.rating,
-            segment=b.segment,
-            location=b.location
+            yieldType= b.yieldType,
+            issuer_location=b.issuer_location,
         )
         for b in bonds
     ]
+
+    return {
+        "dsl": json.dumps(result,indent=2),
+        "data": bond_data
+    }
 
 
 # For dev run

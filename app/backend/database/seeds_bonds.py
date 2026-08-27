@@ -1,7 +1,7 @@
 from db import init_db
 from models import Bond
 
-init_db()
+#init_db()
 #
 # Use this to insert some canned data
 #
@@ -15,6 +15,6 @@ sample_bonds = [
 ]
 
 for bond in sample_bonds:
-    bond.save()
+    #bond.save()
 
 print("✅ Sample bonds inserted into MongoDB.")

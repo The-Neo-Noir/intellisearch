@@ -14,3 +14,12 @@ This project has two main folders
 
     requirements.txt contains all the necessary packages required to run the backend
 
+
+    isin: str | None = Field(None, description='isin number is the name of the bond id')
+    currency: str| None=Field(None, description='Currency of the bond')
+    issuer: str | None = Field(None, description="Name of issuer")
+    segment: str | None = Field(None, description="PSU, Corporate, etc.")
+    coupon: str | None = Field(None, description="Coupon % or range")
+    maturityYear: int | None = Field(None, description="Year of maturity and current year is 2026")
+    yieldType: str | None = Field(None, description="Fixed, Floating, etc.")
+    issuer_location: str | None = Field(None, description="Location of the bond issued by . like Singapore , HongKong , US,UK,AU")
