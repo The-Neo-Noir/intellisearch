@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bonds Search — Autosuggest Prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Bonds Search</h1>
+      <p class="sub">Phase 1: instant local autosuggest as you type. Phase 2: an LLM converts your finished query into the real DSL — that split is deliberate, see below.</p>
+    </header>
+
+    <div class="search-wrap">
+      <div class="search-box">
+        <span id="conn-dot" class="conn-dot" title="connecting..."></span>
+        <input id="search-input" type="text" autocomplete="off" spellcheck="false"
+               placeholder="Try: bonds from ABN AMRO Bank rated A maturing in 2030" />
+        <button id="clear-btn" class="link-btn" hidden>clear</button>
+      </div>
+      <ul id="suggestion-list" class="suggestions" hidden></ul>
+      <p class="key-hint"><kbd>Tab</kbd> accepts the highlighted suggestion &amp; keeps typing · <kbd>Enter</kbd> submits the query and converts it with AI</p>
+    </div>
+
+    <div id="chip-row" class="chip-row" aria-live="polite"></div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span>Local hint (instant, as you type)</span>
+        <button id="toggle-json" class="link-btn">show JSON</button>
+      </div>
+      <pre id="dsl-json" class="dsl-json" hidden></pre>
+      <p id="dsl-empty" class="muted">Start typing above — recognized attributes appear here as chips. This is a fast, local, best-effort guess for live feedback only. It only understands phrasing this grammar was explicitly taught, so "triple a" or "junk bonds" won't register here — that's the LLM's job below, not this panel's.</p>
+    </div>
+
+    <div class="panel llm-panel">
+      <div class="panel-head">
+        <span>Authoritative DSL (via LLM, on submit)</span>
+      </div>
+      <p class="muted">Called once, when you're done typing — not per keystroke. Handles the phrasing the local grammar can't: "triple a", "junk bonds", "floater", casual wording.</p>
+      <button id="llm-convert-btn" class="primary-btn">Convert with AI →</button>
+      <div id="llm-status" class="muted" hidden></div>
+      <pre id="llm-json" class="dsl-json" hidden></pre>
+    </div>
+
+    <div class="panel examples">
+      <div class="panel-head"><span>Try these</span></div>
+      <ul>
+        <li data-example="bonds from ABN AMRO Bank NV rated A maturing in 2030">bonds from ABN AMRO Bank NV rated A maturing in 2030</li>
+        <li data-example="bonds with rate above 4% currency USD">bonds with rate above 4% currency USD</li>
+        <li data-example="floating rate bank bonds from HK">floating rate bank bonds from HK</li>
+        <li data-example="zero coupon bonds from European Investment Bank">zero coupon bonds from European Investment Bank</li>
+        <li data-example="perpetual bonds rated BBB-">perpetual bonds rated BBB-</li>
+      </ul>
+    </div>
+
+    <footer>
+      <p>The autosuggest above is 100% local: trie + grammar + difflib fuzzy matching, no external API calls, no dependencies to install. "Convert with AI" is the one deliberate exception — it calls the Anthropic API once per submit and needs <code>ANTHROPIC_API_KEY</code> set in the environment the server runs in.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
